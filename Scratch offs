@@ -1,0 +1,85 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Virtual Scratch-Off Coupon</title>
+  <style>
+    body {
+      background: #f7f0ff;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }.container {
+  position: relative;
+  width: 320px;
+  height: 200px;
+  background: linear-gradient(135deg, #ffd1f5, #e0bfff);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+  overflow: hidden;
+  text-align: center;
+}
+
+.message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #6a006a;
+  font-size: 20px;
+  font-weight: bold;
+  z-index: 1;
+}
+
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="message">💎 10% OFF Your Next Sparkle 💎</div>
+    <canvas id="scratchCanvas" width="320" height="200"></canvas>
+  </div>  <script>
+    const canvas = document.getElementById('scratchCanvas');
+    const ctx = canvas.getContext('2d');
+    let isDrawing = false;
+
+    const gradient = ctx.createLinearGradient(0, 0, 320, 200);
+    gradient.addColorStop(0, '#d4a5f9');
+    gradient.addColorStop(1, '#f7caff');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    const glitterImage = new Image();
+    glitterImage.src = 'https://www.transparenttextures.com/patterns/stardust.png';
+    glitterImage.onload = () => {
+      ctx.globalAlpha = 0.3;
+      ctx.drawImage(glitterImage, 0, 0, canvas.width, canvas.height);
+      ctx.globalAlpha = 1;
+    }
+
+    canvas.addEventListener('mousedown', () => isDrawing = true);
+    canvas.addEventListener('mouseup', () => isDrawing = false);
+    canvas.addEventListener('mouseleave', () => isDrawing = false);
+
+    canvas.addEventListener('mousemove', (e) => {
+      if (!isDrawing) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath();
+      ctx.arc(x, y, 20, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalCompositeOperation = 'source-over';
+    });
+  </script></body>
+</html>
